@@ -1,0 +1,10 @@
+FROM python:3.6.6
+ENV PYTHONUNBUFFERED 1
+
+RUN mkdir /code
+WORKDIR /code
+
+COPY requirements.txt /code/requirements.txt
+RUN pip install -U pip --no-cache-dir && pip install -r /code/requirements.txt --no-cache-dir
+
+COPY . /code/
