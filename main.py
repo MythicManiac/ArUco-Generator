@@ -1,4 +1,5 @@
 import os
+import math
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -18,7 +19,7 @@ class CardGraphicGenerator(object):
         self.output_path = os.path.abspath(output_path)
         if not os.path.exists(self.output_path):
             os.makedirs(self.output_path)
-        if not os.path.exists(os.path.join(self.output_path, "marksers")):
+        if not os.path.exists(os.path.join(self.output_path, "markers")):
             os.makedirs(os.path.join(self.output_path, "markers"))
         self.start = start
         self.stop = stop
@@ -45,7 +46,7 @@ class CardGraphicGenerator(object):
         marker = Image.open(marker_path)
         card.paste(marker, (
             int(card.width / 2 - marker.width / 2),
-            int(card.height / 2 - marker.height / 2)
+            int(card.height / 2 - marker.height / 2),
         ))
 
         card_text = self.render_text(str(code))
@@ -54,7 +55,13 @@ class CardGraphicGenerator(object):
         card.paste(card_text, CARD_TEXT_OFFSET)
         card = card.transpose(Image.ROTATE_180)
 
-        filename = self.get_output_path("card_%s.png" % code)
+        face = "face"
+        name = str(int(math.floor(code / 2)))
+        if code % 2 == 1:
+            face = "back"
+            name = str(int(math.floor((code - 1) / 2)))
+
+        filename = self.get_output_path("card_%s[%s].png" % (name, face))
         card.save(filename)
         return filename
 
@@ -70,7 +77,7 @@ def main():
     generator = CardGraphicGenerator(
         output_path="markers",
         start=0,
-        stop=212
+        stop=212,
     )
     generator.generate()
 
