@@ -70,7 +70,6 @@ def main():
     generator = CardGraphicGenerator(
         output_path="markers",
         start=0,
-        # stop=1
         stop=212
     )
     generator.generate()
